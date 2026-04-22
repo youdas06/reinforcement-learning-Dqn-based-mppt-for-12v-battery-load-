@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Youdas Tairi — Electronics & AI Engineer</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0a0c10;
+      --surface: #111318;
+      --border: #1e2128;
+      --accent: #c8a97e;
+      --accent2: #4a90d9;
+      --text: #e8e4de;
+      --muted: #6b7280;
+      --grid: rgba(200, 169, 126, 0.04);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Mono', monospace;
+      font-size: 14px;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    /* Grid background */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(var(--grid) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+      background-size: 60px 60px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Glow blob */
+    body::after {
+      content: '';
+      position: fixed;
+      top: -200px;
+      right: -200px;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(74,144,217,0.08) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 60px;
+      border-bottom: 1px solid var(--border);
+      background: rgba(10, 12, 16, 0.85);
+      backdrop-filter: blur(12px);
+    }
+
+    .nav-logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 22px;
+      font-weight: 600;
+      color: var(--accent);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 40px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      transition: color 0.3s;
+    }
+    .nav-links a:hover { color: var(--accent); }
+
+    /* HERO */
+    .hero {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding: 120px 60px 80px;
+    }
+
+    .hero-inner {
+      max-width: 900px;
+    }
+
+    .hero-tag {
+      font-size: 11px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--accent2);
+      margin-bottom: 28px;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.2s forwards;
+    }
+
+    .hero-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(52px, 8vw, 96px);
+      font-weight: 300;
+      line-height: 1.05;
+      letter-spacing: -1px;
+      color: var(--text);
+      opacity: 0;
+      animation: fadeUp 0.8s 0.4s forwards;
+    }
+
+    .hero-title span {
+      color: var(--accent);
+      display: block;
+    }
+
+    .hero-subtitle {
+      margin-top: 32px;
+      font-size: 13px;
+      color: var(--muted);
+      max-width: 480px;
+      line-height: 1.9;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.6s forwards;
+    }
+
+    .hero-cta {
+      margin-top: 48px;
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.8s forwards;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 14px 32px;
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      text-decoration: none;
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      background: transparent;
+      cursor: pointer;
+      transition: all 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+    .btn::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--accent);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.3s;
+      z-index: -1;
+    }
+    .btn:hover { color: var(--bg); }
+    .btn:hover::before { transform: scaleX(1); }
+
+    .btn-ghost {
+      border-color: var(--border);
+      color: var(--muted);
+    }
+    .btn-ghost:hover { border-color: var(--muted); color: var(--text); }
+    .btn-ghost::before { background: var(--surface); }
+    .btn-ghost:hover { color: var(--text); }
+
+    /* scroll indicator */
+    .scroll-hint {
+      position: absolute;
+      bottom: 40px;
+      left: 60px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 10px;
+      letter-spacing: 2px;
+      color: var(--muted);
+      text-transform: uppercase;
+      opacity: 0;
+      animation: fadeUp 0.8s 1.2s forwards;
+    }
+    .scroll-hint::before {
+      content: '';
+      width: 40px;
+      height: 1px;
+      background: var(--muted);
+    }
+
+    /* SECTION BASE */
+    section {
+      position: relative;
+      z-index: 1;
+      padding: 100px 60px;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: baseline;
+      gap: 20px;
+      margin-bottom: 60px;
+    }
+
+    .section-num {
+      font-size: 11px;
+      color: var(--accent);
+      letter-spacing: 2px;
+    }
+
+    .section-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(32px, 4vw, 48px);
+      font-weight: 300;
+      color: var(--text);
+    }
+
+    .section-line {
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+      margin-left: 20px;
+    }
+
+    /* ABOUT */
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: start;
+    }
+
+    .about-text p {
+      color: var(--muted);
+      line-height: 2;
+      margin-bottom: 20px;
+    }
+
+    .about-text p strong {
+      color: var(--text);
+      font-weight: 400;
+    }
+
+    .about-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2px;
+    }
+
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 28px;
+      transition: border-color 0.3s;
+    }
+    .stat-card:hover { border-color: var(--accent); }
+
+    .stat-num {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 40px;
+      font-weight: 300;
+      color: var(--accent);
+      display: block;
+    }
+
+    .stat-label {
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-top: 6px;
+    }
+
+    /* SKILLS */
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+    }
+
+    .skill-block {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 36px 32px;
+      transition: all 0.3s;
+      cursor: default;
+    }
+    .skill-block:hover {
+      border-color: var(--accent2);
+      background: rgba(74,144,217,0.04);
+    }
+
+    .skill-icon {
+      font-size: 24px;
+      margin-bottom: 16px;
+    }
+
+    .skill-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 22px;
+      font-weight: 400;
+      color: var(--text);
+      margin-bottom: 12px;
+    }
+
+    .skill-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 16px;
+    }
+
+    .tag {
+      font-size: 10px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border: 1px solid var(--border);
+      color: var(--muted);
+    }
+
+    /* PROJECTS */
+    .projects-list {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .project-row {
+      display: grid;
+      grid-template-columns: 80px 1fr auto;
+      align-items: center;
+      gap: 32px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 28px 32px;
+      transition: all 0.3s;
+      cursor: default;
+    }
+
+    .project-row:hover {
+      border-color: var(--accent);
+      transform: translateX(4px);
+    }
+
+    .project-num {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 36px;
+      font-weight: 300;
+      color: var(--border);
+    }
+
+    .project-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 24px;
+      font-weight: 400;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+
+    .project-desc {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .project-badge {
+      font-size: 10px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      padding: 6px 14px;
+      border: 1px solid var(--accent2);
+      color: var(--accent2);
+      white-space: nowrap;
+    }
+
+    /* CONTACT */
+    .contact-inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: start;
+    }
+
+    .contact-text {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(28px, 3vw, 40px);
+      font-weight: 300;
+      color: var(--text);
+      line-height: 1.3;
+    }
+
+    .contact-text span { color: var(--accent); }
+
+    .contact-links {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .contact-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 20px 28px;
+      text-decoration: none;
+      color: var(--muted);
+      font-size: 12px;
+      letter-spacing: 1px;
+      transition: all 0.3s;
+    }
+    .contact-item:hover {
+      border-color: var(--accent);
+      color: var(--text);
+      padding-left: 36px;
+    }
+
+    .contact-item span:last-child { color: var(--accent); font-size: 18px; }
+
+    /* FOOTER */
+    footer {
+      position: relative;
+      z-index: 1;
+      padding: 32px 60px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 1px;
+    }
+
+    /* ANIMATIONS */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: none;
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      nav { padding: 16px 24px; }
+      .nav-links { display: none; }
+      .hero, section { padding-left: 24px; padding-right: 24px; }
+      .about-grid, .contact-inner { grid-template-columns: 1fr; gap: 40px; }
+      .skills-grid { grid-template-columns: 1fr; }
+      .project-row { grid-template-columns: 50px 1fr; }
+      .project-badge { display: none; }
+      .scroll-hint { left: 24px; }
+      footer { flex-direction: column; gap: 8px; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-logo">Y.T</div>
+    <ul class="nav-links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero" id="home">
+    <div class="hero-inner">
+      <p class="hero-tag">// Electronics & AI Engineering</p>
+      <h1 class="hero-title">
+        Youdas<br>
+        <span>Tairi</span>
+      </h1>
+      <p class="hero-subtitle">
+        Engineering the intersection of hardware and intelligence — designing electronic systems powered by artificial intelligence for the next generation of technology.
+      </p>
+      <div class="hero-cta">
+        <a href="#projects" class="btn">View Projects</a>
+        <a href="#contact" class="btn btn-ghost">Get In Touch</a>
+      </div>
+    </div>
+    <div class="scroll-hint">Scroll to explore</div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about">
+    <div class="section-header reveal">
+      <span class="section-num">01</span>
+      <h2 class="section-title">About</h2>
+      <div class="section-line"></div>
+    </div>
+    <div class="about-grid">
+      <div class="about-text reveal">
+        <p>I am <strong>Youdas Tairi</strong>, an Electronics & AI Engineer with a passion for building intelligent systems that bridge the physical and digital world.</p>
+        <p>My work spans from <strong>circuit design and embedded systems</strong> to <strong>machine learning models</strong> and <strong>AI-driven automation</strong> — crafting solutions that are both technically rigorous and practically impactful.</p>
+        <p>I believe the most powerful innovations happen at the boundary between <strong>hardware precision</strong> and <strong>software intelligence</strong>.</p>
+      </div>
+      <div class="about-stats reveal">
+        <div class="stat-card">
+          <span class="stat-num">AI</span>
+          <div class="stat-label">Machine Learning</div>
+        </div>
+        <div class="stat-card">
+          <span class="stat-num">IoT</span>
+          <div class="stat-label">Connected Systems</div>
+        </div>
+        <div class="stat-card">
+          <span class="stat-num">PCB</span>
+          <div class="stat-label">Circuit Design</div>
+        </div>
+        <div class="stat-card">
+          <span class="stat-num">∞</span>
+          <div class="stat-label">Curiosity</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SKILLS -->
+  <section id="skills">
+    <div class="section-header reveal">
+      <span class="section-num">02</span>
+      <h2 class="section-title">Expertise</h2>
+      <div class="section-line"></div>
+    </div>
+    <div class="skills-grid">
+      <div class="skill-block reveal">
+        <div class="skill-icon">⚡</div>
+        <div class="skill-name">Electronics Engineering</div>
+        <p style="color:var(--muted);font-size:12px;">Analog & digital circuit design, PCB layout, embedded firmware, and signal processing.</p>
+        <div class="skill-tags">
+          <span class="tag">PCB Design</span>
+          <span class="tag">FPGA</span>
+          <span class="tag">Embedded C</span>
+          <span class="tag">Arduino</span>
+          <span class="tag">STM32</span>
+        </div>
+      </div>
+      <div class="skill-block reveal">
+        <div class="skill-icon">🧠</div>
+        <div class="skill-name">Artificial Intelligence</div>
+        <p style="color:var(--muted);font-size:12px;">Building and deploying machine learning models, neural networks, and intelligent automation pipelines.</p>
+        <div class="skill-tags">
+          <span class="tag">Python</span>
+          <span class="tag">TensorFlow</span>
+          <span class="tag">PyTorch</span>
+          <span class="tag">Computer Vision</span>
+          <span class="tag">NLP</span>
+        </div>
+      </div>
+      <div class="skill-block reveal">
+        <div class="skill-icon">🔗</div>
+        <div class="skill-name">Edge & IoT Systems</div>
+        <p style="color:var(--muted);font-size:12px;">Deploying AI at the edge, building connected devices, and designing real-time control systems.</p>
+        <div class="skill-tags">
+          <span class="tag">Raspberry Pi</span>
+          <span class="tag">MQTT</span>
+          <span class="tag">Edge AI</span>
+          <span class="tag">ROS</span>
+          <span class="tag">Linux</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROJECTS -->
+  <section id="projects">
+    <div class="section-header reveal">
+      <span class="section-num">03</span>
+      <h2 class="section-title">Projects</h2>
+      <div class="section-line"></div>
+    </div>
+    <div class="projects-list">
+      <div class="project-row reveal">
+        <div class="project-num">01</div>
+        <div>
+          <div class="project-name">AI-Powered Motor Controller</div>
+          <div class="project-desc">Adaptive PID control system enhanced with reinforcement learning for precision motor drive applications.</div>
+        </div>
+        <div class="project-badge">Embedded AI</div>
+      </div>
+      <div class="project-row reveal">
+        <div class="project-num">02</div>
+        <div>
+          <div class="project-name">Smart Sensor Fusion Platform</div>
+          <div class="project-desc">Multi-sensor IoT platform with on-device ML inference for real-time anomaly detection in industrial environments.</div>
+        </div>
+        <div class="project-badge">IoT / ML</div>
+      </div>
+      <div class="project-row reveal">
+        <div class="project-num">03</div>
+        <div>
+          <div class="project-name">PCB Defect Detection System</div>
+          <div class="project-desc">Computer vision pipeline for automated quality control inspection of printed circuit boards using deep learning.</div>
+        </div>
+        <div class="project-badge">Computer Vision</div>
+      </div>
+      <div class="project-row reveal">
+        <div class="project-num">04</div>
+        <div>
+          <div class="project-name">Autonomous Navigation Robot</div>
+          <div class="project-desc">Mobile robot with SLAM-based navigation, obstacle avoidance, and deep learning perception stack.</div>
+        </div>
+        <div class="project-badge">Robotics</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact">
+    <div class="section-header reveal">
+      <span class="section-num">04</span>
+      <h2 class="section-title">Contact</h2>
+      <div class="section-line"></div>
+    </div>
+    <div class="contact-inner">
+      <div class="contact-text reveal">
+        Let's build something <span>intelligent</span> together.
+      </div>
+      <div class="contact-links reveal">
+        <a href="mailto:youdas.tairi@email.com" class="contact-item">
+          <span>youdas.tairi@email.com</span>
+          <span>→</span>
+        </a>
+        <a href="#" class="contact-item">
+          <span>LinkedIn</span>
+          <span>→</span>
+        </a>
+        <a href="#" class="contact-item">
+          <span>GitHub</span>
+          <span>→</span>
+        </a>
+        <a href="#" class="contact-item">
+          <span>Download CV</span>
+          <span>→</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <span>© 2026 Youdas Tairi</span>
+    <span>Electronics & AI Engineer</span>
+  </footer>
+
+  <script>
+    // Scroll reveal
+    const reveals = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry, i) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => entry.target.classList.add('visible'), i * 80);
+        }
+      });
+    }, { threshold: 0.1 });
+    reveals.forEach(el => observer.observe(el));
+  </script>
+</body>
+</html>
